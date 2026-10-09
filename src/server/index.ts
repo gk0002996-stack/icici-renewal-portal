@@ -767,6 +767,16 @@ async function startServer() {
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Central Server running on http://0.0.0.0:${PORT}`);
+
+    // Automatically synchronize with live Render production server in background
+    if (!process.env.RENDER && !process.env.IS_RENDER) {
+      setTimeout(() => {
+        syncWithLiveProductionServer().catch(() => {});
+      }, 2000);
+      setInterval(() => {
+        syncWithLiveProductionServer().catch(() => {});
+      }, 15000);
+    }
   });
 }
 

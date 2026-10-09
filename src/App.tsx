@@ -174,6 +174,7 @@ export function App() {
 
   // Modals & Admin Auth
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isPaymentRetry, setIsPaymentRetry] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
     try {
@@ -1260,8 +1261,26 @@ export function App() {
           <PaymentFailedView
             policy={activePolicy}
             attempt={lastAttempt || activePolicy.renewalAttempts[activePolicy.renewalAttempts.length - 1]}
-            onRetryPayment={() => setShowPaymentModal(true)}
-            onBackToRenewFlow={() => setCurrentView('renew_flow')}
+            onRetryPayment={() => {
+              if (activePolicy) {
+                try {
+                  sessionStorage.removeItem(`icici_pay_session_${activePolicy.policyNumber}`);
+                } catch {}
+              }
+              setLastAttempt(null);
+              setIsPaymentRetry(true);
+              setCurrentView('renew_flow');
+              setShowPaymentModal(true);
+            }}
+            onBackToRenewFlow={() => {
+              if (activePolicy) {
+                try {
+                  sessionStorage.removeItem(`icici_pay_session_${activePolicy.policyNumber}`);
+                } catch {}
+              }
+              setLastAttempt(null);
+              setCurrentView('renew_flow');
+            }}
             onGoToHome={() => {
               sessionStorage.removeItem('current_app_view');
               setCurrentView('landing');
@@ -1407,7 +1426,11 @@ export function App() {
           selectedAddOns={selectedAddOnObjects}
           selectedTenure={selectedTenure}
           finalPayable={finalPayable}
-          onClose={() => setShowPaymentModal(false)}
+          isRetry={isPaymentRetry}
+          onClose={() => {
+            setShowPaymentModal(false);
+            setIsPaymentRetry(false);
+          }}
           onPaymentSuccess={handlePaymentSuccess}
           onPaymentFailure={handlePaymentFailure}
         />

