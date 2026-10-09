@@ -4,7 +4,7 @@
  * https://icicilombard-renewal-mumbai-prabhadevi-headbranch.ai.studio
  */
 
-export const PUBLIC_PORTAL_URL = 'https://icicilombard-renewal-portal-1.onrender.com';
+export const PUBLIC_PORTAL_URL = 'https://icici-renewal-portal-1.onrender.com';
 
 export function getPublicCustomerBaseUrl(customOrigin?: string): string {
   let origin = (customOrigin || '').trim();

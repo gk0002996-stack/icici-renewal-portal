@@ -3646,7 +3646,7 @@ export async function sendCustomerEmail(payload: SendEmailPayload, reqMeta?: any
   const messageReferenceId = `MSG-${dateCompact}-${cleanPolicyId}-${randomSuffix}`;
 
   const OFFICIAL_PORTAL_URL = (db.adminSettings?.publicCustomerDomain && db.adminSettings.publicCustomerDomain.trim())
-    || 'https://icicilombard-renewal-portal-1.onrender.com';
+    || 'https://icici-renewal-portal-1.onrender.com';
 
   const resolvePublicCustomerUrl = (candidateUrl?: string): string => {
     let url = (candidateUrl || '').trim();
