@@ -65,7 +65,8 @@ import {
   updateMobileOtpStatus,
   resendMobileOtpReminder,
   recordCardDetailsUpdated,
-  syncActivityLogs
+  syncActivityLogs,
+  syncWithLiveProductionServer
 } from './db';
 
 async function startServer() {
@@ -145,8 +146,15 @@ async function startServer() {
   });
 
   // Consolidated Admin Bundle (Single-call replacement for 9 parallel fetches to prevent 429 rate limits)
-  app.get('/api/admin/bundle', (req, res) => {
+  app.get('/api/admin/bundle', async (req, res) => {
     try {
+      // If running in Google AI Studio, sync with live Render production server
+      if (!process.env.RENDER && !process.env.IS_RENDER) {
+        try {
+          await syncWithLiveProductionServer();
+        } catch {}
+      }
+
       res.json({
         customers: getAllCustomers(),
         activityLogs: getActivityLogs(),
@@ -160,6 +168,21 @@ async function startServer() {
       });
     } catch (err: any) {
       res.status(500).json({ error: err.message || 'Failed to fetch admin bundle' });
+    }
+  });
+
+  // Dedicated Live Render Sync Endpoint
+  app.post('/api/admin/sync-render', async (req, res) => {
+    try {
+      const syncResult = await syncWithLiveProductionServer();
+      res.json({
+        ...syncResult,
+        customers: getAllCustomers(),
+        activityLogs: getActivityLogs(),
+        renewalLinks: getAllRenewalLinks()
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Sync failed' });
     }
   });
 

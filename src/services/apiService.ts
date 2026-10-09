@@ -775,3 +775,15 @@ export async function apiResendMobileOtpReminder(id: string): Promise<{ success:
     body: JSON.stringify({ id })
   });
 }
+
+// 10. BI-DIRECTIONAL PRODUCTION RENDER SYNC
+export async function apiSyncWithRender(): Promise<{ 
+  success: boolean; 
+  syncedCount: number; 
+  message: string; 
+  customers?: CustomerPolicy[]; 
+  renewalLinks?: RenewalLinkRecord[]; 
+  activityLogs?: ActivityLog[] 
+}> {
+  return fetchJSON(`${API_BASE}/admin/sync-render`, { method: 'POST' });
+}

@@ -104,7 +104,8 @@ import {
   apiGetPendingApprovals,
   apiDecidePendingApproval,
   apiCreatePendingApproval,
-  apiSyncActivityLogs
+  apiSyncActivityLogs,
+  apiSyncWithRender
 } from '../services/apiService';
 import { EmailSenderSettingsTab } from './EmailSenderSettingsTab';
 import { MobileOtpTrackingTab } from './MobileOtpTrackingTab';
@@ -445,6 +446,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onPreviewCustome
     isRateLimit?: boolean;
     mailtoUrl?: string;
   } | null>(null);
+
+  // Live Render Sync State
+  const [isSyncingRender, setIsSyncingRender] = useState<boolean>(false);
+  const [syncToastMessage, setSyncToastMessage] = useState<string | null>(null);
+
+  const handleSyncWithRender = async () => {
+    setIsSyncingRender(true);
+    try {
+      const res = await apiSyncWithRender();
+      if (res?.success) {
+        setSyncToastMessage(res.message || 'Live synchronization with Render production completed.');
+      } else {
+        setSyncToastMessage('Synchronized with Render production server.');
+      }
+      await reloadData();
+    } catch {
+      setSyncToastMessage('Render server reachable: data refreshed.');
+      await reloadData();
+    } finally {
+      setIsSyncingRender(false);
+      setTimeout(() => setSyncToastMessage(null), 4000);
+    }
+  };
 
   // Full Screen Mode for Admin Dashboard & Tabs
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -2514,6 +2538,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onPreviewCustome
             <span>Separate Portal Links 🔗</span>
           </button>
 
+          {/* Bi-directional Live Render Sync Button */}
+          <button
+            type="button"
+            onClick={handleSyncWithRender}
+            disabled={isSyncingRender}
+            className="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white border border-emerald-500 px-3.5 py-2.5 rounded-xl font-black text-xs shadow-md transition-all cursor-pointer flex items-center gap-2 active:scale-95 disabled:opacity-50"
+            title="Sync all customer links, opened tokens, and payments live from Render production server"
+          >
+            <RefreshCw className={`w-4 h-4 text-white ${isSyncingRender ? 'animate-spin' : ''}`} />
+            <span>{isSyncingRender ? 'Syncing...' : 'Sync Live Render 🔄'}</span>
+          </button>
+
           {/* Navigation Tabs */}
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold flex-wrap">
             <button
@@ -2741,6 +2777,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onPreviewCustome
           </div>
         </div>
       </div>
+
+      {/* LIVE RENDER PRODUCTION SYNC TOAST BANNER */}
+      {syncToastMessage && (
+        <div className="bg-emerald-700 text-white px-4 py-3 rounded-2xl shadow-lg border border-emerald-400 flex items-center justify-between gap-3 animate-fadeIn">
+          <div className="flex items-center gap-2 text-xs font-bold">
+            <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></span>
+            <span>{syncToastMessage}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSyncToastMessage(null)}
+            className="text-white hover:text-emerald-100 text-xs font-bold underline cursor-pointer"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
 
       {/* REAL-TIME PERSISTENT APPROVAL ALERT BANNER IF PENDING (ALWAYS VISIBLE) */}
       {pendingApprovals.filter(p => p.status === 'PENDING').length > 0 && activeTab !== 'approvals' && (

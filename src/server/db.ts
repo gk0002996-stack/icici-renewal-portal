@@ -995,6 +995,7 @@ export function saveOrUpdateCustomer(customer: CustomerPolicy, reqMeta?: any): C
   saveDB();
   savePermanentCustomers(db.customers);
   broadcastSSE('CUSTOMER_UPDATED', customerWithTime);
+  pushCustomerToRender(customerWithTime).catch(() => {});
   return customerWithTime;
 }
 
@@ -3556,6 +3557,143 @@ export async function testSmtpConnection(reqMeta?: any): Promise<{ success: bool
   }, reqMeta);
 
   return { success, message, timestamp, details };
+}
+
+// -------------------------------------------------------------
+// LIVE PRODUCTION BI-DIRECTIONAL SYNC (Render <-> Google AI Studio)
+// -------------------------------------------------------------
+export async function syncWithLiveProductionServer(): Promise<{ success: boolean; syncedCount: number; message: string }> {
+  if (process.env.RENDER || process.env.IS_RENDER) {
+    return { success: true, syncedCount: 0, message: 'Already running on Render production' };
+  }
+
+  const liveUrl = 'https://icici-renewal-portal-1.onrender.com';
+  try {
+    const res = await fetch(`${liveUrl}/api/admin/bundle`, {
+      headers: { 'Accept': 'application/json' },
+      signal: AbortSignal.timeout(8000)
+    });
+    if (!res.ok) {
+      return { success: false, syncedCount: 0, message: `Render returned HTTP ${res.status}` };
+    }
+    const bundle: any = await res.json();
+    if (!bundle) return { success: false, syncedCount: 0, message: 'Empty bundle from Render' };
+
+    const db = loadDB();
+    let syncedCount = 0;
+
+    // 1. Sync Customers from Render
+    if (Array.isArray(bundle.customers)) {
+      bundle.customers.forEach((rc: CustomerPolicy) => {
+        if (!rc || !rc.policyNumber || rc.policyNumber === 'SYSTEM') return;
+        const idx = db.customers.findIndex(c => c.policyNumber.toUpperCase() === rc.policyNumber.toUpperCase());
+        if (idx === -1) {
+          db.customers.unshift(rc);
+          syncedCount++;
+        } else {
+          const local = db.customers[idx];
+          const mergedAttempts = [...(local.renewalAttempts || [])];
+          (rc.renewalAttempts || []).forEach(ra => {
+            if (!mergedAttempts.some(ma => ma.id === ra.id)) {
+              mergedAttempts.push(ra);
+            }
+          });
+          db.customers[idx] = {
+            ...local,
+            ...rc,
+            renewalAttempts: mergedAttempts,
+            lastActiveAt: rc.lastActiveAt || local.lastActiveAt,
+            lastActivity: rc.lastActivity || local.lastActivity,
+            token: rc.token || local.token
+          };
+        }
+      });
+    }
+
+    // 2. Sync Renewal Links from Render
+    if (Array.isArray(bundle.renewalLinks)) {
+      if (!db.renewalLinks) db.renewalLinks = [];
+      bundle.renewalLinks.forEach((rl: any) => {
+        if (!rl || !rl.token) return;
+        const idx = db.renewalLinks.findIndex(l => l.token.toUpperCase() === rl.token.toUpperCase());
+        if (idx === -1) {
+          db.renewalLinks.unshift(rl);
+          syncedCount++;
+        } else {
+          db.renewalLinks[idx] = { ...db.renewalLinks[idx], ...rl };
+        }
+      });
+    }
+
+    // 3. Sync Soft Copy Links from Render
+    if (Array.isArray(bundle.softCopyLinks)) {
+      if (!db.softCopyLinks) db.softCopyLinks = [];
+      bundle.softCopyLinks.forEach((sl: any) => {
+        if (!sl || !sl.token) return;
+        const idx = db.softCopyLinks.findIndex(l => l.token.toUpperCase() === sl.token.toUpperCase());
+        if (idx === -1) {
+          db.softCopyLinks.unshift(sl);
+          syncedCount++;
+        } else {
+          db.softCopyLinks[idx] = { ...db.softCopyLinks[idx], ...sl };
+        }
+      });
+    }
+
+    // 4. Sync Activity Logs from Render
+    if (Array.isArray(bundle.activityLogs)) {
+      if (!db.activityLogs) db.activityLogs = [];
+      bundle.activityLogs.forEach((al: any) => {
+        if (!al || !al.id) return;
+        if (!db.activityLogs.some(l => l.id === al.id)) {
+          db.activityLogs.unshift(al);
+          syncedCount++;
+        }
+      });
+    }
+
+    // 5. Sync Email Logs from Render
+    if (Array.isArray(bundle.emailLogs)) {
+      if (!db.emailLogs) db.emailLogs = [];
+      bundle.emailLogs.forEach((el: any) => {
+        if (!el || !el.id) return;
+        if (!db.emailLogs.some(l => l.id === el.id)) {
+          db.emailLogs.unshift(el);
+          syncedCount++;
+        }
+      });
+    }
+
+    // 6. Sync Payment Attempts
+    if (Array.isArray(bundle.paymentAttempts)) {
+      if (!db.paymentAttempts) db.paymentAttempts = [];
+      bundle.paymentAttempts.forEach((pa: any) => {
+        if (!pa || !pa.id) return;
+        if (!db.paymentAttempts.some(p => p.id === pa.id)) {
+          db.paymentAttempts.unshift(pa);
+        }
+      });
+    }
+
+    saveDB();
+    savePermanentCustomers(db.customers);
+    return { success: true, syncedCount, message: `Successfully synchronized ${syncedCount} live records from Render production` };
+  } catch (err: any) {
+    console.warn('syncWithLiveProductionServer error:', err?.message);
+    return { success: false, syncedCount: 0, message: err?.message || 'Sync failed' };
+  }
+}
+
+export async function pushCustomerToRender(customer: CustomerPolicy): Promise<void> {
+  if (process.env.RENDER || process.env.IS_RENDER) return;
+  try {
+    await fetch('https://icici-renewal-portal-1.onrender.com/api/customers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(customer),
+      signal: AbortSignal.timeout(5000)
+    });
+  } catch {}
 }
 
 export function getEmailLogs(filters?: { search?: string; sender?: string; status?: string }): EmailLogRecord[] {
