@@ -1,395 +1,6 @@
 {
   "customers": [
     {
-      "customerId": "ADMIN-EMAIL",
-      "policyNumber": "SYSTEM",
-      "customerName": "Admin System",
-      "action": "Email Provider Connection Test",
-      "category": "Admin Action",
-      "status": "Success",
-      "details": "Live Provider Connection Verified: Successfully authenticated with smtpout.secureserver.net:465 via TLS.",
-      "id": "act-1791539338785-lg37y",
-      "timestamp": "2026-10-09 15:18:58",
-      "createdAt": "2026-10-09 15:18:58",
-      "updatedAt": "2026-10-09 16:41:01",
-      "deviceType": "Desktop",
-      "browser": "Chrome",
-      "os": "Windows",
-      "ipAddress": "127.0.0.1",
-      "sessionId": "sess-1791539338785",
-      "addOnRiders": [
-        {
-          "id": "addon-power-booster",
-          "name": "Power Booster (Super Loyalty Bonus)",
-          "description": "At the end of each policy year, we will provide a cumulative bonus of 100% of the expiring or renewed annual sum...",
-          "annualPremium": 10450,
-          "coverageAmount": "100% Cumulative Annual SI Bonus",
-          "popular": true,
-          "tenurePrices": {
-            "1": 10450,
-            "2": 19855,
-            "3": 28738
-          }
-        },
-        {
-          "id": "addon-infinite-care",
-          "name": "Infinite care",
-          "description": "Covers medical expenses for the insured person's hospitalization or any single claim during the policy's lifetim...",
-          "annualPremium": 8500,
-          "coverageAmount": "No Limits on Lifetime Hospitalization",
-          "popular": true,
-          "tenurePrices": {
-            "1": 8500,
-            "2": 16150,
-            "3": 23375
-          }
-        },
-        {
-          "id": "addon-2hr-hospitalization",
-          "name": "2 Hour Hospitalization",
-          "description": "Covers ICU charges, doctor's fees, room rent (single private AC), and other medical expenses for hospitalisation of as...",
-          "annualPremium": 3200,
-          "coverageAmount": "Hospitalization from 2 Hours",
-          "tenurePrices": {
-            "1": 3200,
-            "2": 6080,
-            "3": 8800
-          }
-        },
-        {
-          "id": "addon-claim-protector",
-          "name": "Claim protector",
-          "description": "Covers expenses for non-payables as per IRDAI's excluded list.",
-          "annualPremium": 2150,
-          "coverageAmount": "Non-Payables Coverage (IRDAI List)",
-          "popular": true,
-          "tenurePrices": {
-            "1": 2150,
-            "2": 4085,
-            "3": 5913
-          }
-        },
-        {
-          "id": "addon-befit",
-          "name": "BeFit (Plan C)",
-          "description": "Covers everyday medical care expenses including doctor consultations, lab tests, medicines, and more.",
-          "annualPremium": 2500,
-          "coverageAmount": "Plan A: Starter",
-          "popular": true,
-          "tenurePrices": {
-            "1": 2500,
-            "2": 4750,
-            "3": 6875
-          }
-        },
-        {
-          "id": "addon-teleconsultation",
-          "name": "Teleconsultation",
-          "description": "We arrange teleconsultations with qualified medical practitioners for routine health issues. This includes...",
-          "annualPremium": 1500,
-          "coverageAmount": "24x7 Audio / Video / Chat Consultations",
-          "tenurePrices": {
-            "1": 1500,
-            "2": 2850,
-            "3": 4125
-          }
-        },
-        {
-          "id": "addon-health-checkup",
-          "name": "Health check-up",
-          "description": "Avail an annual health check-up with our network providers at any time during the policy period. Refer to the list of...",
-          "annualPremium": 2850,
-          "coverageAmount": "Annual Preventive Screening (2 Adults)",
-          "tenurePrices": {
-            "1": 2850,
-            "2": 5415,
-            "3": 7838
-          }
-        },
-        {
-          "id": "addon-room-modifier",
-          "name": "Room Modifier",
-          "description": "Room Rent Limited up to : Any Room. This coverage allows you to adjust room rent eligibility based on specific...",
-          "annualPremium": 5535,
-          "coverageAmount": "Room Rent Limited to Any Room",
-          "tenurePrices": {
-            "1": 5535,
-            "2": 10517,
-            "3": 15221
-          }
-        },
-        {
-          "id": "addon-opd",
-          "name": "Outpatient Care (OPD) Rider",
-          "description": "Comprehensive outpatient cover for doctor consultations, diagnostic tests, pathology, and pharmacy bills without requiring hospital admission.",
-          "annualPremium": 6000,
-          "coverageAmount": "₹25,000 OPD Limit",
-          "popular": true,
-          "tier": "25k",
-          "tenurePrices": {
-            "1": 6000,
-            "2": 11400,
-            "3": 16200
-          }
-        },
-        {
-          "id": "addon-maternity",
-          "name": "Maternity Benefit",
-          "description": "Ensure comprehensive coverage for maternity care expenses for expecting mothers and their newborns with this add-on:",
-          "annualPremium": 2500,
-          "coverageAmount": "Maternity & Newborn Care",
-          "tenurePrices": {
-            "1": 2500,
-            "2": 4750,
-            "3": 6875
-          }
-        },
-        {
-          "id": "addon-si-protector",
-          "name": "Sum Insured Protector",
-          "description": "Covers the added health care expenses due to increasing costs of medical treatment",
-          "annualPremium": 587,
-          "coverageAmount": "Healthcare Cost Protection",
-          "tenurePrices": {
-            "1": 587,
-            "2": 1115,
-            "3": 1614
-          }
-        },
-        {
-          "id": "addon-compassionate",
-          "name": "Compassionate Visit",
-          "description": "Covers travel expenses of a family member when you're hospitalized and alone.",
-          "annualPremium": 600,
-          "coverageAmount": "Round-trip Travel Tickets",
-          "tenurePrices": {
-            "1": 600,
-            "2": 1140,
-            "3": 1650
-          }
-        },
-        {
-          "id": "addon-home-nursing",
-          "name": "Nursing at Home",
-          "description": "Having the right kind of help is helpful not just for the patient but for the entire family.",
-          "annualPremium": 1250,
-          "coverageAmount": "Home Nurse Allowance",
-          "tenurePrices": {
-            "1": 1250,
-            "2": 2375,
-            "3": 3438
-          }
-        },
-        {
-          "id": "addon-accident",
-          "name": "Personal Accident",
-          "description": "Covers injury sustained due to personal accident.",
-          "annualPremium": 1400,
-          "coverageAmount": "Fixed Injury/Death Payout",
-          "tenurePrices": {
-            "1": 1400,
-            "2": 2660,
-            "3": 3850
-          }
-        },
-        {
-          "id": "addon-critical-illness",
-          "name": "Critical Illness",
-          "description": "Provides cover for critical illness suffered",
-          "annualPremium": 7765,
-          "coverageAmount": "Pre-decided Payout",
-          "popular": true,
-          "tenurePrices": {
-            "1": 7765,
-            "2": 14754,
-            "3": 21354
-          }
-        }
-      ],
-      "benefits": [
-        {
-          "id": "ben-1",
-          "title": "In-patient treatment",
-          "iconName": "Building2",
-          "description": "Hospitalisation expenses longer than 24 hours covered",
-          "details": "Covers room rent, ICU charges, doctor fees, nursing, and medicines for stays over 24 hours.",
-          "highlight": "Full Hospitalisation"
-        },
-        {
-          "id": "ben-2",
-          "title": "Pre & post-hospitalisation medical expenses",
-          "iconName": "CalendarRange",
-          "description": "Medical expenses incurred 30 days before and 60 days after hospitalisation covered",
-          "details": "Includes diagnostic tests, prescriptions, and post-discharge doctor consultations.",
-          "highlight": "30 Days Pre / 60 Days Post"
-        },
-        {
-          "id": "ben-3",
-          "title": "Donor expenses",
-          "iconName": "Heart",
-          "description": "Organ donation expenses covered",
-          "details": "Covers in-patient medical costs incurred by the organ donor during organ harvesting procedure.",
-          "highlight": "Donor Care"
-        },
-        {
-          "id": "ben-4",
-          "title": "Daycare procedures and treatment",
-          "iconName": "Clock",
-          "description": "Daycare treatments requiring less than 24 hours of hospitalisation are covered",
-          "details": "Covers 540+ medical & surgical procedures requiring short stays under 24 hours.",
-          "highlight": "540+ Procedures"
-        },
-        {
-          "id": "ben-5",
-          "title": "In-patient AYUSH hospitalisation",
-          "iconName": "Sparkles",
-          "description": "Medical expenses for alternative treatments such as Ayurveda & Naturotherapy covered",
-          "details": "In-patient care in recognized government/NABH hospitals under Ayurveda, Unani, Siddha, Homeopathy.",
-          "highlight": "Alternative Medicine"
-        },
-        {
-          "id": "ben-6",
-          "title": "Reset benefit",
-          "iconName": "RotateCcw",
-          "description": "100% of the base Sum Insured reset in case of shortage of coverage amount",
-          "details": "Automatic 100% restoration of base Sum Insured upon exhaustion.",
-          "highlight": "100% SI Reset"
-        },
-        {
-          "id": "ben-7",
-          "title": "Loyalty bonus",
-          "iconName": "Award",
-          "description": "This provides a 20% increase of the expiring or renewed Annual Sum Insured (whichever is lower) at the end of each policy year, as long as the policy is continuously renewed.",
-          "details": "20% annual sum insured boost upon continuous renewal without extra premium.",
-          "highlight": "20% Annual Bonus"
-        },
-        {
-          "id": "ben-8",
-          "title": "Domestic road ambulance",
-          "iconName": "Activity",
-          "description": "Ambulance transfer between hospitals, diagnostic centres, etc, covered",
-          "details": "Road ambulance transport charges covered for emergency transfers.",
-          "highlight": "Emergency Transport"
-        },
-        {
-          "id": "ben-9",
-          "title": "Preventive health checkup",
-          "iconName": "Activity",
-          "description": "Free annual health check-ups",
-          "details": "Complimentary annual health screening tests for all insured family members.",
-          "highlight": "Free Annual Checkup"
-        },
-        {
-          "id": "ben-10",
-          "title": "Domiciliary hospitalisation",
-          "iconName": "Home",
-          "description": "Coverage for medical treatments conducted at home due to unavailability of hospital beds or unfit to move to a hospital",
-          "details": "Covers treatment expenses at home under medical supervision when hospital admission is impossible.",
-          "highlight": "Home Treatment"
-        },
-        {
-          "id": "ben-11",
-          "title": "Zone-based pricing",
-          "iconName": "Zap",
-          "description": "Premium advantage based on the treatment costs in your zone",
-          "details": "Enjoy discounted premiums calibrated according to healthcare cost tiers in your city.",
-          "highlight": "Zone B Advantage"
-        },
-        {
-          "id": "ben-12",
-          "title": "Air ambulance cover",
-          "iconName": "Plane",
-          "description": "Covers air ambulance expenses to transfer you to the nearest hospital for emergency care",
-          "details": "Emergency air transport coverage for life-threatening critical care emergencies.",
-          "highlight": "Air Transport"
-        },
-        {
-          "id": "ben-13",
-          "title": "Home care treatment",
-          "iconName": "Home",
-          "description": "Home care treatment expenses covered",
-          "details": "Coverage for specialized nursing, chemotherapy, or IV care administered at home.",
-          "highlight": "Home Care"
-        },
-        {
-          "id": "ben-14",
-          "title": "Teleconsultation",
-          "iconName": "Video",
-          "description": "Unlimited teleconsultations, available 24x7 with health care professionals for routine & emergency health concerns",
-          "details": "Instant video and audio doctor consultations anytime via mobile app or web portal.",
-          "highlight": "24x7 Unlimited"
-        },
-        {
-          "id": "ben-15",
-          "title": "Technological advancements and treatments",
-          "iconName": "Zap",
-          "description": "Stay ahead with cutting-edge technological advancements and treatments designed to improve health outcomes and patient care.",
-          "details": "Includes robotic surgeries, stem cell therapies, radio-surgeries, and advanced targeted therapies.",
-          "highlight": "Cutting-Edge Tech"
-        }
-      ],
-      "selectedAddOnIds": [
-        "addon-claim-protector",
-        "addon-opd",
-        "addon-maternity"
-      ],
-      "totalSumInsured": 500000,
-      "baseSumInsured": 500000,
-      "loyaltyBonus": 0,
-      "policyStatus": "Success",
-      "policyStartDate": "2025-01-01",
-      "previousPolicyEndDate": "2026-01-01",
-      "renewalDueDate": "2026-01-01",
-      "selectedTenure": 1,
-      "adminCustomDiscountAmount": 0,
-      "loyaltyNcbDiscountPct": 10,
-      "baseAnnualPremium": 12500,
-      "tenurePrices": {
-        "1": 12500,
-        "2": 23750,
-        "3": 34375
-      },
-      "grossTenurePrices": {
-        "1": 13875,
-        "2": 26363,
-        "3": 38156
-      },
-      "members": [
-        {
-          "id": "mem-act-1791539338785-lg37y",
-          "name": "Admin System",
-          "relation": "Self",
-          "gender": "Male",
-          "dob": "1985-05-15",
-          "age": 40,
-          "coverageAmount": 500000,
-          "preExistingConditions": [
-            "No"
-          ]
-        }
-      ],
-      "kyc": {
-        "applicantName": "Admin System",
-        "dob": "1985-05-15",
-        "email": "customer@example.com",
-        "mobile": "9876543210",
-        "address": "Registered Address",
-        "city": "Mumbai",
-        "state": "Maharashtra",
-        "pincode": "400001",
-        "kycStatus": "Verified",
-        "panOrAadhar": "ABCDE1234F",
-        "nomineeName": "Nominee",
-        "nomineeRelation": "Spouse",
-        "nomineeAge": 38
-      },
-      "renewalAttempts": [],
-      "mobileNumber": "9876543210",
-      "email": "customer@example.com",
-      "policyName": "ICICI Lombard Complete Health Insurance",
-      "policyType": "Complete Health Insurance"
-    },
-    {
       "customerId": "cust-auto-1791288651372",
       "policyNumber": "100020346300",
       "customerName": "Valued Policyholder",
@@ -400,7 +11,7 @@
       "id": "cust-auto-1791288651372",
       "timestamp": "2026-10-06 17:40:51",
       "createdAt": "2026-10-06 17:40:51",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "deviceType": "Desktop",
       "browser": "Chrome",
       "os": "Windows",
@@ -804,7 +415,7 @@
       "id": "cust-auto-1791287429018",
       "timestamp": "2026-10-06 17:20:29",
       "createdAt": "2026-10-06 17:20:29",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "deviceType": "Desktop",
       "browser": "Chrome",
       "os": "Windows",
@@ -1208,7 +819,7 @@
       "id": "cust-mamta-elevate-100023506500",
       "timestamp": "2026-09-27 12:40:25",
       "createdAt": "2026-09-27 12:40:25",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "deviceType": "Desktop",
       "browser": "Chrome",
       "os": "Windows",
@@ -2044,7 +1655,7 @@
           "gatewayNotes": "Bank session timed out before OTP entry."
         }
       ],
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "createdAt": "2026-09-19 15:45:24",
       "tenurePrices": {
         "1": 28900,
@@ -2501,7 +2112,7 @@
       "lastPaymentRef": "TXN-APX-40102898",
       "lastPaymentDate": "2026-08-14 15:26:18",
       "newPolicyEndDate": "2027-08-13",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "createdAt": "2026-09-19 15:45:24",
       "lastOpenedAt": "2026-09-19 13:15:30",
       "tenurePrices": {
@@ -2873,7 +2484,7 @@
         }
       ],
       "createdAt": "2026-09-19 15:45:24",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "totalSumInsured": 500000,
       "baseSumInsured": 500000,
       "policyStatus": "Renewed",
@@ -3272,7 +2883,7 @@
         }
       ],
       "createdAt": "2026-09-19 15:45:24",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "totalSumInsured": 1500000,
       "baseSumInsured": 1500000,
       "policyStatus": "Expired",
@@ -3664,7 +3275,7 @@
         }
       ],
       "createdAt": "2026-09-19 15:45:24",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "totalSumInsured": 1000000,
       "baseSumInsured": 1000000,
       "policyStatus": "Expiring Soon",
@@ -4089,7 +3700,7 @@
         "nomineeAge": 33,
         "nomineeDob": "16/10/1992"
       },
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "token": "RNW-4193APRN30535953702000-8812",
       "generatedAt": "2026-09-18 13:13:09",
       "sentAt": "2026-09-18 13:13:09",
@@ -4112,7 +3723,7 @@
       "id": "cust-306201696",
       "timestamp": "2026-09-28 13:32:19",
       "createdAt": "2026-09-06 18:00:00",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "deviceType": "Desktop",
       "browser": "Chrome",
       "os": "Windows",
@@ -4567,7 +4178,7 @@
       "id": "cust-301",
       "timestamp": "2026-08-15 15:52:42",
       "createdAt": "2026-08-15 10:00:00",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "deviceType": "Desktop",
       "browser": "Chrome",
       "os": "Windows",
@@ -5087,7 +4698,7 @@
       "id": "cust-201",
       "timestamp": "2026-08-14 19:22:45",
       "createdAt": "2026-08-15 11:00:00",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "deviceType": "Desktop",
       "browser": "Chrome",
       "os": "Windows",
@@ -5499,7 +5110,7 @@
       "status": "Expired",
       "details": "Customer attempted to access expired link token: RNW-884912-X1. Link expired on 2026-08-21 23:59:59.",
       "createdAt": "2026-08-16 08:34:59",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "deviceType": "Desktop",
       "browser": "Chrome",
       "os": "Windows",
@@ -5966,7 +5577,7 @@
       "id": "cust-shambu-4128i",
       "timestamp": "2026-08-14 20:32:57",
       "createdAt": "2026-08-15 18:30:00",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "deviceType": "Desktop",
       "browser": "Chrome",
       "os": "Windows",
@@ -6407,7 +6018,7 @@
       "status": "Expired",
       "details": "Downloaded Policy Schedule PDF & Health Cards",
       "createdAt": "2026-08-16 08:34:59",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "deviceType": "Desktop",
       "browser": "Chrome",
       "os": "Windows",
@@ -7188,7 +6799,7 @@
       },
       "renewalAttempts": [],
       "createdAt": "2026-08-16 08:34:59",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "token": "RNW-993041-P3",
       "generatedAt": "2026-08-16 09:00:00",
       "sentAt": "2026-08-16 09:00:00",
@@ -7601,7 +7212,7 @@
       },
       "renewalAttempts": [],
       "createdAt": "2026-08-16 08:34:59",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "token": "RNW-112233-R4",
       "generatedAt": "2026-08-16 09:15:00",
       "sentAt": "2026-08-16 09:15:00",
@@ -8026,7 +7637,7 @@
       "lastActiveAt": "2026-09-17 14:15:22",
       "lastActivity": "Renewal Link Opened & UPI Selected",
       "createdAt": "2026-09-17 11:24:10",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "token": "RNW-IL-HLTH-784920-3341",
       "generatedAt": "2026-09-17 11:24:10",
       "sentAt": "2026-09-17 11:24:10",
@@ -8436,7 +8047,7 @@
       "lastActiveAt": "2026-09-14 15:30:10",
       "lastActivity": "Premium Paid Successfully via UPI",
       "createdAt": "2026-09-14 14:10:05",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "token": "RNW-IL-HLTH-392015-9182",
       "generatedAt": "2026-09-14 14:10:05",
       "sentAt": "2026-09-14 14:10:05",
@@ -8858,7 +8469,7 @@
       "lastActiveAt": "2026-09-10 11:45:00",
       "lastActivity": "Paid via Credit Card (•••• 4821)",
       "createdAt": "2026-09-10 09:30:00",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "token": "RNW-4128IHSNR18945201101000-4729",
       "generatedAt": "2026-09-10 09:30:00",
       "sentAt": "2026-09-10 09:30:00",
@@ -9253,7 +8864,7 @@
       "lastActiveAt": "2026-09-02 16:45:20",
       "lastActivity": "Link Generated & Dispatched by Advisor",
       "createdAt": "2026-09-02 16:45:20",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "token": "RNW-IL-HLTH-610294-8201",
       "generatedAt": "2026-09-02 16:45:20",
       "sentAt": "2026-09-02 16:45:20",
@@ -9654,7 +9265,7 @@
       "lastActiveAt": "2026-08-28 11:20:00",
       "lastActivity": "Net Banking Login Initiated",
       "createdAt": "2026-08-28 10:15:30",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "token": "RNW-4193IAPRN29840192301000-5190",
       "generatedAt": "2026-08-28 10:15:30",
       "sentAt": "2026-08-28 10:15:30",
@@ -10077,7 +9688,7 @@
       "lastActiveAt": "2026-08-20 16:10:00",
       "lastActivity": "Paid via HDFC Net Banking",
       "createdAt": "2026-08-20 15:20:00",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "token": "RNW-IL-HLTH-520184-6047",
       "generatedAt": "2026-08-20 15:20:00",
       "sentAt": "2026-08-20 15:20:00",
@@ -10471,7 +10082,7 @@
       "lastActiveAt": "2026-08-10 12:00:00",
       "lastActivity": "Renewal Link Generated for Senior Citizen Policy",
       "createdAt": "2026-08-10 12:00:00",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "token": "RNW-4128IHSNR29871034102000-1120",
       "generatedAt": "2026-08-10 12:00:00",
       "sentAt": "2026-08-10 12:00:00",
@@ -10498,7 +10109,7 @@
       "timestamp": "2026-09-19 16:27:32",
       "id": "cust-il-449102",
       "createdAt": "2026-07-25 10:45:00",
-      "updatedAt": "2026-10-09 16:41:01",
+      "updatedAt": "2026-10-09 16:48:31",
       "ipAddress": "127.0.0.1",
       "sessionId": "sess-1789815452676",
       "mobileNumber": "9444019283",

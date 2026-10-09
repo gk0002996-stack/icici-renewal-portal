@@ -169,6 +169,15 @@ async function startServer() {
     res.json({ success: true, message: 'Central database reset to initial seed' });
   });
 
+  // Sync Registry Customers
+  app.post('/api/admin/customers/sync-registry', (req, res) => {
+    try {
+      res.json({ success: true, customers: getAllCustomers() });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message || 'Failed to sync customers' });
+    }
+  });
+
   // Customers & Policies
   app.get('/api/customers', (req, res) => {
     const { query } = req.query;

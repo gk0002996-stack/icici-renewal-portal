@@ -879,7 +879,7 @@ export function saveAdminSettings(newSettings: Partial<AdminSettings>, reqMeta?:
 
 export function getAllCustomers(): CustomerPolicy[] {
   const db = loadDB();
-  return db.customers;
+  return (db.customers || []).filter(c => c.policyNumber !== 'SYSTEM' && c.customerName !== 'Admin System');
 }
 
 export function getCustomerByQuery(query: string): CustomerPolicy | null {
