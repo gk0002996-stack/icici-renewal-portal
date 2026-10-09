@@ -5769,9 +5769,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onPreviewCustome
                   </label>
                   <input
                     type="text"
-                    value={adminUpiForm.publicCustomerDomain || 'https://ais-pre-gdwiiousmavxza7y5lqc6z-373750463952.asia-southeast1.run.app'}
+                    value={adminUpiForm.publicCustomerDomain || 'https://icici-renewal-portal-1.onrender.com'}
                     onChange={(e) => setAdminUpiForm({ ...adminUpiForm, publicCustomerDomain: e.target.value })}
-                    placeholder="https://ais-pre-gdwiiousmavxza7y5lqc6z-373750463952.asia-southeast1.run.app"
+                    placeholder="https://icici-renewal-portal-1.onrender.com"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-xs"
                   />
                   <div className="flex flex-wrap gap-2 mt-2">
