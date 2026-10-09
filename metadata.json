@@ -1,0 +1,6 @@
+{
+  "name": "ICICI Lombard Health Insurance",
+  "description": "ICICI Lombard Health Insurance Online Policy Renewal & Soft Copy Portal",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
